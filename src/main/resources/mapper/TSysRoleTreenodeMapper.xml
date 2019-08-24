@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.ssm.mapper.TSysRoleTreenodeMapper" >
+  <resultMap id="BaseResultMap" type="com.zking.ssm.model.TSysRoleTreenode" >
+    <constructor >
+      <idArg column="rrid" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="role_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="tree_node_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    rrid, role_id, tree_node_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_role_treenode
+    where rrid = #{rrid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_sys_role_treenode
+    where rrid = #{rrid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.zking.ssm.model.TSysRoleTreenode" >
+    insert into t_sys_role_treenode (rrid, role_id, tree_node_id
+      )
+    values (#{rrid,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{treeNodeId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zking.ssm.model.TSysRoleTreenode" >
+    insert into t_sys_role_treenode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rrid != null" >
+        rrid,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="treeNodeId != null" >
+        tree_node_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rrid != null" >
+        #{rrid,jdbcType=BIGINT},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="treeNodeId != null" >
+        #{treeNodeId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zking.ssm.model.TSysRoleTreenode" >
+    update t_sys_role_treenode
+    <set >
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="treeNodeId != null" >
+        tree_node_id = #{treeNodeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where rrid = #{rrid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zking.ssm.model.TSysRoleTreenode" >
+    update t_sys_role_treenode
+    set role_id = #{roleId,jdbcType=BIGINT},
+      tree_node_id = #{treeNodeId,jdbcType=BIGINT}
+    where rrid = #{rrid,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.ssm.mapper.StudentMapper" >
+  <cache type="com.zking.ssm.redis.RedisCache"></cache>
+  <!--<cache type="org.mybatis.caches.ehcache.EhcacheCache">-->
+    <!--<property name="timeToIdleSeconds" value="3600"/>-->
+    <!--<property name="timeToLiveSeconds" value="3600"/>-->
+    <!--<property name="maxEntriesLocalHeap" value="1000"/>-->
+    <!--<property name="maxEntriesLocalDisk" value="10000000"/>-->
+    <!--<property name="memoryStoreEvictionPolicy" value="LRU"/>-->
+  <!--</cache>-->
+  <resultMap id="BaseResultMap" type="com.zking.ssm.model.Student" >
+    <constructor >
+      <idArg column="sid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="sname" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="sname_pinyin" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="age" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+
+  <resultMap id="row" type="com.zking.ssm.model.Student" >
+      <id column="sid" property="sid" javaType="java.lang.Integer" />
+      <result column="sname" property="sname" javaType="java.lang.String" />
+      <result column="sname_pinyin" property="snamePinyin" javaType="java.lang.String" />
+      <result column="age" property="age" javaType="java.lang.Integer" />
+      <result column="remark" property="remark" javaType="java.lang.String" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    sid, sname, sname_pinyin, age, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_student
+    where sid = #{sid,jdbcType=INTEGER}
+  </select>
+    <select id="list" resultMap="row" parameterType="com.zking.ssm.model.Student">
+      select * from t_student
+      where 1=1
+      <if test="sname != null and sname!=''" >
+        and (sname like concat('%',#{sname},'%') or sname_pinyin like concat('%',#{sname},'%') )
+      </if>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_student
+    where sid = #{sid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="stu" >
+    insert into t_student (sid, sname, sname_pinyin, 
+      age, remark)
+    values (#{sid,jdbcType=INTEGER}, #{sname,jdbcType=VARCHAR}, #{snamePinyin,jdbcType=VARCHAR}, 
+      #{age,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zking.ssm.model.Student" >
+    insert into t_student
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sid != null" >
+        sid,
+      </if>
+      <if test="sname != null" >
+        sname,
+      </if>
+      <if test="snamePinyin != null" >
+        sname_pinyin,
+      </if>
+      <if test="age != null" >
+        age,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sid != null" >
+        #{sid,jdbcType=INTEGER},
+      </if>
+      <if test="sname != null" >
+        #{sname,jdbcType=VARCHAR},
+      </if>
+      <if test="snamePinyin != null" >
+        #{snamePinyin,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zking.ssm.model.Student" >
+    update t_student
+    <set >
+      <if test="sname != null" >
+        sname = #{sname,jdbcType=VARCHAR},
+      </if>
+      <if test="snamePinyin != null" >
+        sname_pinyin = #{snamePinyin,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zking.ssm.model.Student" >
+    update t_student
+    set sname = #{sname,jdbcType=VARCHAR},
+      sname_pinyin = #{snamePinyin,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where sid = #{sid,jdbcType=INTEGER}
+  </update>
+
+  <insert id="add" useGeneratedKeys="true" keyProperty="sid" parameterType="com.zking.ssm.model.Student">
+    insert into t_student(sname,sname_pinyin,age,remark)
+    values(#{sname},#{snamePinyin},#{age},#{remark})
+  </insert>
+
+  <update id="edit" useGeneratedKeys="true" keyProperty="sid" parameterType="com.zking.ssm.model.Student" >
+    update t_student set  sname = #{sname},sname_pinyin=#{snamePinyin},age=#{age},remark=#{remark}
+    where sid=#{sid}
+  </update>
+
+  <delete id="del"  parameterType="com.zking.ssm.model.Student">
+    delete from t_student where sid =#{sid}
+  </delete>
+  <delete id="deletAll" parameterType="com.zking.ssm.vo.StudentVo">
+    delete from t_student where sid in(
+    <foreach collection="sids" item="item" separator=",">
+      #{item}
+    </foreach>
+    )
+  </delete>
+
+  <select id="load" resultMap="row" parameterType="com.zking.ssm.model.Student" useCache="false">
+    select * from t_student where sid=#{sid}
+  </select>
+
+
+
+</mapper>
