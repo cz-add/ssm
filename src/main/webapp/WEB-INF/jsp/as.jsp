@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Tit阿斯顿发顺丰le</title>
+    <title>Tit阿</title>
 </head>
 <body>
 
